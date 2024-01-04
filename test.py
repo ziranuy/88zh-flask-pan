@@ -11,6 +11,7 @@ import re
 import requests
 from lxml import etree
 
+
 cookies = {
     'bbs_sid': 'dgjkdkn6degfq4nd3v0nr45i7a',
     'isClose': 'yes',
@@ -37,12 +38,14 @@ headers = {
 params = {
     'fontname': '繁花',
 }
-
 response = requests.get('https://www.yunpanziyuan.xyz/fontsearch.htm', params=params, cookies=cookies, headers=headers).text
-
-
 
 html = etree.HTML(response)
 
-divs = html.xpath('string(//*[@id="body"]/div/div[3]/div/li/a)')
-print(divs)
+titles = html.xpath('//*[@id="body"]/div/div[3]/div/li/a')
+title = [etree.tostring(div, method='text', encoding='utf-8').decode('utf-8') for div in titles]
+
+urls = html.xpath('//*[@id="body"]/div/div[3]/div/li/a/@href')
+
+result = [{"title": title, "url": url} for title, url in zip(title, urls)]
+
