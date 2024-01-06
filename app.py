@@ -3,58 +3,105 @@
 # @Author  : lhq
 # @File    : app.py
 # @Description :
+import json
 
-from flask import Flask, render_template
+import redis
+from flask import Flask, render_template, request
 from flask_cors import CORS
-import requests
-from lxml import etree
+
+from resource.wpxz import wpxz
+from resource.yunpanziyuan import yunpanziyuan
+from utils.response import response_decorator
 
 app = Flask(__name__)
 CORS(app)
 
-@app.route('/yunpanziyuan')
-def yunpanziyuan():
+pool = redis.ConnectionPool(host='localhost', port=6379, db=0)
+r = redis.Redis(connection_pool=pool)
 
+@app.route('/api/tabs_list',methods=['GET'])
+@response_decorator
+def tabs_list():
+    return ['云盘资源&yunpanziyuan','网盘小站&wpxz']
 
-    cookies = {
-        'bbs_sid': 'dgjkdkn6degfq4nd3v0nr45i7a',
-        'isClose': 'yes',
-    }
+@app.route('/api/get_list',methods=['GET'])
+@response_decorator
+def get_list():
 
-    headers = {
-        'Connection': 'keep-alive',
-        'Pragma': 'no-cache',
-        'Cache-Control': 'no-cache',
-        'sec-ch-ua': '" Not A;Brand";v="99", "Chromium";v="98"',
-        'sec-ch-ua-mobile': '?0',
-        'sec-ch-ua-platform': '"Windows"',
-        'Upgrade-Insecure-Requests': '1',
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.139 Safari/537.36',
-        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
-        'Sec-Fetch-Site': 'same-origin',
-        'Sec-Fetch-Mode': 'navigate',
-        'Sec-Fetch-User': '?1',
-        'Sec-Fetch-Dest': 'document',
-        'Referer': 'https://www.yunpanziyuan.xyz/',
-        'Accept-Language': 'zh-CN,zh;q=0.9',
-    }
+    keyword = request.args.get('keyword')
+    active_name = request.args.get('activeName')
+    r_keyword = keyword+active_name
 
-    params = {
-        'fontname': '繁花',
-    }
-    response = requests.get('https://www.yunpanziyuan.xyz/fontsearch.htm', params=params, cookies=cookies, headers=headers).text
+    # 获取键的值
+    r_data = r.get(r_keyword)
+    if r_data is not None:
+        return json.loads(r_data)
 
-    html = etree.HTML(response)
+    result = [{'title':'没有找到内容','url':'https://www.baidu.com'},{'title':'没有找到内容','url':'https://www.baidu.com'}]
 
-    titles = html.xpath('//*[@id="body"]/div/div[3]/div/li/a')
-    title = [etree.tostring(div, method='text', encoding='utf-8').decode('utf-8') for div in titles]
+    if active_name == 'yunpanziyuan':
+        result = yunpanziyuan(keyword)
+    elif active_name == 'yunpanziyuan':
+        result = wpxz(keyword)
 
-    urls = html.xpath('//*[@id="body"]/div/div[3]/div/li/a/@href')
+    r.set(r_keyword, json.dumps(result))
 
-    result = [{"title": title, "url": url} for title, url in zip(title, urls)]
+    return result
 
-
-    return 'Hello, World!'
 
 if __name__ == '__main__':
     app.run(debug=True)
+
+
+'''
+result = [
+        {
+            "title": "🐻🐻[繁花]🐻🐻（沪语+普通话版更新中）(胡歌.马伊琍.唐嫣.辛芷蕾)繁花繁花繁花繁花 夸克网盘",
+            "url": "https://www.yunpanziyuan.xyz/thread-226215.htm"
+        },
+        {
+            "title": "🔥繁花🔥4K最新🔥王家卫导演胡歌马伊琍繁花繁花繁花 AL云盘 夸克网盘",
+            "url": "https://www.yunpanziyuan.xyz/thread-226198.htm"
+        },
+        {
+            "title": "繁花4K(2023)🔥今日更新最新一集🔥胡歌/马伊琍/唐嫣/游本昌/🔥繁花导演：王家卫 AL云盘 百度网盘 夸克网盘",
+            "url": "https://www.yunpanziyuan.xyz/thread-226211.htm"
+        },
+        {
+            "title": "繁花 （2023）首播 夸克网盘",
+            "url": "https://www.yunpanziyuan.xyz/thread-226224.htm"
+        },
+        {
+            "title": "繁花似锦(2023)爱情都市剧情 AL云盘 夸克网盘",
+            "url": "https://www.yunpanziyuan.xyz/thread-138576.htm"
+        },
+        {
+            "title": "繁花（2023）剧情/爱情，胡歌、马伊琍主演 夸克网盘",
+            "url": "https://www.yunpanziyuan.xyz/thread-226209.htm"
+        },
+        {
+            "title": "繁花 (2023) 新增4K杜比  上传中 请期待  百度网盘",
+            "url": "https://www.yunpanziyuan.xyz/thread-226231.htm"
+        },
+        {
+            "title": "繁花 (2023) 剧情 / 爱情 胡歌 / 马伊琍 / 唐嫣 汉语普通话 / 沪语 AL云盘 夸克网盘",
+            "url": "https://www.yunpanziyuan.xyz/thread-226386.htm"
+        },
+        {
+            "title": "🔥🔥【繁花/王家卫导演/胡歌 唐嫣 马伊琍】30集持续更新中🔥🔥 AL云盘",
+            "url": "https://www.yunpanziyuan.xyz/thread-226200.htm"
+        },
+        {
+            "title": "电视剧海上繁花高清视频在线观看，百度网盘下载 百度网盘",
+            "url": "https://www.yunpanziyuan.xyz/thread-115469.htm"
+        },
+        {
+            "title": "?繁花似锦(2023)爱情4K60帧?关注我持续更新 AL云盘 夸克网盘",
+            "url": "https://www.yunpanziyuan.xyz/thread-138577.htm"
+        },
+        {
+            "title": "[PC/解谜冒险]地铁繁花 v1.1.10免安装中文版[148M/度盘] 百度网盘",
+            "url": "https://www.yunpanziyuan.xyz/thread-194113.htm"
+        }
+    ]
+'''
