@@ -24,7 +24,7 @@ r = redis.Redis(connection_pool=pool)
 @app.route('/api/tabs_list', methods=['GET'])
 @response_decorator
 def tabs_list():
-    return ['云盘资源&yunpanziyuan', '盘99&pan99','云盘1&yunpan1']
+    return [ '盘99&pan99','云盘1&yunpan1''云盘资源&yunpanziyuan']
 
 
 @app.route('/api/get_list', methods=['GET'])
@@ -44,12 +44,12 @@ def get_list():
     if r_data is not None:
         return json.loads(r_data)
 
-    if active_name == 'yunpanziyuan':
-        result = yunpanziyuan(keyword)
-    elif active_name == 'pan99':
+    if active_name == 'pan99':
         result = pan99(keyword)
     elif active_name == 'yunpan1':
         result = yunpan1(keyword)
+    elif active_name == 'yunpanziyuan':
+        result = yunpanziyuan(keyword)
 
     r.set(r_keyword, json.dumps(result))
     # 过期时间 4个小时
