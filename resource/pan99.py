@@ -37,7 +37,6 @@ def pan99(keyword):
     }
 
     response = requests.get('https://pan99.xyz/', params=params, headers=headers).text
-    print(response)
 
     html = etree.HTML(response)
 
