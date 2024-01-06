@@ -10,6 +10,7 @@ from flask import Flask,  request
 from flask_cors import CORS
 
 from resource.pan99 import  pan99
+from resource.yunpan1 import yunpan1
 from resource.yunpanziyuan import yunpanziyuan
 from utils.response import response_decorator
 
@@ -23,7 +24,7 @@ r = redis.Redis(connection_pool=pool)
 @app.route('/api/tabs_list', methods=['GET'])
 @response_decorator
 def tabs_list():
-    return ['云盘资源&yunpanziyuan', '盘99&pan99']
+    return ['云盘资源&yunpanziyuan', '盘99&pan99','云盘1&yunpan1']
 
 
 @app.route('/api/get_list', methods=['GET'])
@@ -47,6 +48,8 @@ def get_list():
         result = yunpanziyuan(keyword)
     elif active_name == 'pan99':
         result = pan99(keyword)
+    elif active_name == 'yunpan1':
+        result = yunpan1(keyword)
 
     r.set(r_keyword, json.dumps(result))
     # 过期时间 4个小时
