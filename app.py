@@ -9,7 +9,7 @@ import redis
 from flask import Flask,  request
 from flask_cors import CORS
 
-from resource.wpxz import  pan99
+from resource.pan99 import  pan99
 from resource.yunpanziyuan import yunpanziyuan
 from utils.response import response_decorator
 

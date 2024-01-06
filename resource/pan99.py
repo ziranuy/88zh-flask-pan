@@ -31,7 +31,7 @@ def pan99(keyword):
 
     params = {
         'cat': '',
-        's': 'keyword',
+        's': keyword,
     }
 
     response = requests.get('https://pan99.xyz/', params=params, headers=headers).text
