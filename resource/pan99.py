@@ -43,4 +43,4 @@ def pan99(keyword):
 
     result = [{"title": title, "url": url} for title, url in zip(titles, urls)]
 
-    print(result)
+    return result
