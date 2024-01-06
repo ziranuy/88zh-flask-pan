@@ -36,7 +36,7 @@ def yunpanziyuan(keyword):
     }
     response = requests.get('https://www.yunpanziyuan.xyz/fontsearch.htm', params=params, cookies=cookies,
                             headers=headers).text
-
+    print(response)
     html = etree.HTML(response)
 
     titles = html.xpath('//*[@id="body"]/div/div[3]/div/li/a')
