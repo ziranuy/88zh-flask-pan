@@ -4,26 +4,15 @@
 # @File    : wpxz.py
 # https://wpxz.top/
 # @Description :
-import re
 
 import requests
+from lxml import etree
 
-from resource import proxie
 
-
-def wpxz(keyword):
-
-    cookies = {
-        'flarum_session': '74BgMw4kRuQft5XbXgm6nfKiuOugTcsnKBX4lWBg',
-        '__51vcke__K7r5x69JaxwZOOJp': '8c0e1ec6-c815-5124-9f9d-6593bde2a56e',
-        '__51vuft__K7r5x69JaxwZOOJp': '1704541903585',
-        '__vtins__K7r5x69JaxwZOOJp': '%7B%22sid%22%3A%20%223f207794-bd18-5df5-86b5-d8394edb2d19%22%2C%20%22vd%22%3A%201%2C%20%22stt%22%3A%200%2C%20%22dr%22%3A%200%2C%20%22expires%22%3A%201704551194194%2C%20%22ct%22%3A%201704549394194%7D',
-        '__51uvsct__K7r5x69JaxwZOOJp': '2',
-        'cf_clearance': 'iHiwAf_GwthaUEPixZE5qgbQgWion37AfNhmn.g1sKc-1704549399-0-2-c2370dda.9e668fec.9536523a-250.0.0',
-    }
+def pan99(keyword):
 
     headers = {
-        'authority': 'wpxz.top',
+        'authority': 'pan99.xyz',
         'pragma': 'no-cache',
         'cache-control': 'no-cache',
         'sec-ch-ua': '" Not A;Brand";v="99", "Chromium";v="98"',
@@ -36,26 +25,22 @@ def wpxz(keyword):
         'sec-fetch-mode': 'navigate',
         'sec-fetch-user': '?1',
         'sec-fetch-dest': 'document',
+        'referer': 'https://pan99.xyz/%e7%b9%81%e8%8a%b1-2023/tv/',
         'accept-language': 'zh-CN,zh;q=0.9',
     }
 
     params = {
-        'q': keyword,
+        'cat': '',
+        's': 'keyword',
     }
 
-    response = requests.get('https://wpxz.top/', params=params,cookies=cookies, headers=headers,proxies=proxie).text
-    print(response)
-    pattern = r'<noscript id="flarum-content">(.*?)>下一页'
-    match = re.search(pattern, response, re.DOTALL)
-    if match:
-        obj1 = match.group(1)[:-40]
-    else:
-        return None
+    response = requests.get('https://pan99.xyz/', params=params, headers=headers).text
 
-    pattern = r'<a href="(.*?)">\s*(.*?)\s*</a>'
-    matches = re.findall(pattern, obj1, re.DOTALL)
+    html = etree.HTML(response)
 
-    # 使用strip()函数删除字符串两端的空白字符
-    matches = [(url, title.strip()) for url, title in matches]
-    result = [{"title": title, "url": url} for url, title in matches]
-    return result
+    titles = html.xpath('/html/body/main/section/div/div/article/div[3]/h2/a/text()')
+    urls = html.xpath('/html/body/main/section/div/div/article/div[3]/h2/a/@href')
+
+    result = [{"title": title, "url": url} for title, url in zip(titles, urls)]
+
+    print(result)

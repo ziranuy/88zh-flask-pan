@@ -6,10 +6,10 @@
 import json
 
 import redis
-from flask import Flask, render_template, request
+from flask import Flask,  request
 from flask_cors import CORS
 
-from resource.wpxz import wpxz
+from resource.wpxz import  pan99
 from resource.yunpanziyuan import yunpanziyuan
 from utils.response import response_decorator
 
@@ -23,7 +23,7 @@ r = redis.Redis(connection_pool=pool)
 @app.route('/api/tabs_list', methods=['GET'])
 @response_decorator
 def tabs_list():
-    return ['云盘资源&yunpanziyuan', '网盘小站&wpxz']
+    return ['云盘资源&yunpanziyuan', '盘99&pan99']
 
 
 @app.route('/api/get_list', methods=['GET'])
@@ -46,7 +46,7 @@ def get_list():
     if active_name == 'yunpanziyuan':
         result = yunpanziyuan(keyword)
     elif active_name == 'wpxz':
-        result = wpxz(keyword)
+        result = pan99(keyword)
 
     r.set(r_keyword, json.dumps(result))
     # 过期时间 4个小时
