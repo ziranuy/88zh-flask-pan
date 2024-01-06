@@ -6,10 +6,10 @@
 import json
 
 import redis
-from flask import Flask,  request
+from flask import Flask, request
 from flask_cors import CORS
 
-from resource.pan99 import  pan99
+from resource.pan99 import pan99
 from resource.yunpan1 import yunpan1
 from resource.yunpanziyuan import yunpanziyuan
 from utils.response import response_decorator
@@ -24,7 +24,7 @@ r = redis.Redis(connection_pool=pool)
 @app.route('/api/tabs_list', methods=['GET'])
 @response_decorator
 def tabs_list():
-    return [ '盘99&pan99','云盘1&yunpan1''云盘资源&yunpanziyuan']
+    return ['盘99&pan99', '云盘1&yunpan1', '云盘资源&yunpanziyuan']
 
 
 @app.route('/api/get_list', methods=['GET'])
@@ -32,7 +32,7 @@ def tabs_list():
 def get_list():
     keyword = request.args.get('keyword')
     active_name = request.args.get('activeName')
-    print(keyword,active_name)
+    print(keyword, active_name)
     r_keyword = keyword + active_name
     result = [{'title': '没有找到内容', 'url': 'https://www.baidu.com'},
               {'title': '没有找到内容', 'url': 'https://www.baidu.com'}]
