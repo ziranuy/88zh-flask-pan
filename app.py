@@ -45,7 +45,7 @@ def get_list():
 
     if active_name == 'yunpanziyuan':
         result = yunpanziyuan(keyword)
-    elif active_name == 'wpxz':
+    elif active_name == 'pan99':
         result = pan99(keyword)
 
     r.set(r_keyword, json.dumps(result))
