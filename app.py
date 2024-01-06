@@ -19,39 +19,44 @@ CORS(app)
 pool = redis.ConnectionPool(host='localhost', port=6379, db=0)
 r = redis.Redis(connection_pool=pool)
 
-@app.route('/api/tabs_list',methods=['GET'])
+
+@app.route('/api/tabs_list', methods=['GET'])
 @response_decorator
 def tabs_list():
-    return ['云盘资源&yunpanziyuan','网盘小站&wpxz']
+    return ['云盘资源&yunpanziyuan', '网盘小站&wpxz']
 
-@app.route('/api/get_list',methods=['GET'])
+
+@app.route('/api/get_list', methods=['GET'])
 @response_decorator
 def get_list():
-
     keyword = request.args.get('keyword')
     active_name = request.args.get('activeName')
-    r_keyword = keyword+active_name
+    print(keyword,active_name)
+    r_keyword = keyword + active_name
+    result = [{'title': '没有找到内容', 'url': 'https://www.baidu.com'},
+              {'title': '没有找到内容', 'url': 'https://www.baidu.com'}]
+    if keyword is None:
+        return result
 
     # 获取键的值
     r_data = r.get(r_keyword)
     if r_data is not None:
         return json.loads(r_data)
 
-    result = [{'title':'没有找到内容','url':'https://www.baidu.com'},{'title':'没有找到内容','url':'https://www.baidu.com'}]
-
     if active_name == 'yunpanziyuan':
         result = yunpanziyuan(keyword)
-    elif active_name == 'yunpanziyuan':
+    elif active_name == 'wpxz':
         result = wpxz(keyword)
 
     r.set(r_keyword, json.dumps(result))
+    # 过期时间 4个小时
+    r.expire(r_keyword, 14400)
 
     return result
 
 
 if __name__ == '__main__':
     app.run(debug=True)
-
 
 '''
 result = [

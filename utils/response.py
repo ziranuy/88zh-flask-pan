@@ -4,7 +4,7 @@
 # @File    : response.py
 # @Description :
 
-from flask import jsonify
+from flask import jsonify, make_response
 from functools import wraps
 
 def response_decorator(f):
@@ -13,7 +13,7 @@ def response_decorator(f):
         response = f(*args, **kwargs)
         if isinstance(response, tuple):
             status_code, data = response
-            return jsonify({'status_code': status_code, 'data': data})
+            return make_response(jsonify({'data': data}), status_code)
         else:
             return jsonify({'status_code': 200, 'data': response})
     return wrapper

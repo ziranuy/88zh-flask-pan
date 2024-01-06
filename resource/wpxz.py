@@ -35,7 +35,6 @@ def wpxz(keyword):
     pattern = r'<noscript id="flarum-content">(.*?)>下一页'
     match = re.search(pattern, response, re.DOTALL)
     if match:
-        print('--------------------------------------')
         obj1 = match.group(1)[:-40]
     else:
         return None
@@ -45,6 +44,5 @@ def wpxz(keyword):
 
     # 使用strip()函数删除字符串两端的空白字符
     matches = [(url, title.strip()) for url, title in matches]
-
-    result = [{"title": title, "url": url} for title, url in matches]
+    result = [{"title": title, "url": url} for url, title in matches]
     return result
