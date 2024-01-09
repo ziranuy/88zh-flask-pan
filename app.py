@@ -9,6 +9,7 @@ import redis
 from flask import Flask, request
 from flask_cors import CORS
 
+from resource.alypw import alypw
 from resource.leijing import leijing
 from resource.pan666 import pan666
 from resource.pan99 import pan99
@@ -29,6 +30,7 @@ r = redis.Redis(connection_pool=pool)
 def tabs_list():
     return [
         # '盘99&pan99',
+        '云盘分享网&alypw',
         '盘66&pan666',
         '阿里云盘&wordpress',
         '云盘1&yunpan1',
@@ -56,6 +58,8 @@ def get_list():
 
     if active_name == 'pan99':
         result = pan99(keyword)
+    elif active_name == 'alypw':
+        result = alypw(keyword)
     elif active_name == 'pan666':
         result = pan666(keyword)
     elif active_name == 'wordpress':

@@ -6,13 +6,8 @@
 import requests
 from lxml import etree
 
-from resource import proxies
 
-
-def alypw():
-    cookies = {
-        'timezone': '8',
-    }
+def alypw(keyword):
 
     headers = {
         'authority': 'www.alypw.com',
@@ -34,17 +29,19 @@ def alypw():
     }
 
     params = {
-        'q': '繁花',
+        'q': keyword,
     }
 
-    response = requests.get('https://www.alypw.com/search.php', params=params, headers=headers, proxies=proxies).text
-    print(response)
+    response = requests.get('https://www.alypw.com/search.php', params=params, headers=headers).text
 
     html = etree.HTML(response)
-    titles = html.xpath('//*[@id="main"]/div/div[1]/div/ul/li//div[2]/h2/a//*[not(self::strong)]/text()')
+    titles = []
+    elements = html.xpath('//*[@id="main"]/div/div[1]/div/ul/li/div[2]/h2')
+    for ele in elements:
+        title = ele.xpath('./a/span//text()')
+        titles.append("".join(title))
     urls = html.xpath('//*[@id="main"]/div/div[1]/div/ul/li/div[2]/h2/a/@href')
 
     result = [{"title": title, "url": url} for title, url in zip(titles, urls)]
-    print(result)
+    return result
 
-alypw()
