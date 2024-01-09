@@ -9,6 +9,7 @@ import redis
 from flask import Flask, request
 from flask_cors import CORS
 
+from resource.leijing import leijing
 from resource.pan99 import pan99
 from resource.wordpress import wordpress
 from resource.yunpan1 import yunpan1
@@ -29,6 +30,7 @@ def tabs_list():
         # '盘99&pan99',
         '阿里云盘&wordpress',
         '云盘1&yunpan1',
+        '雷鲸(天翼云)&leijing',
         '云盘资源&yunpanziyuan'
     ]
 
@@ -56,6 +58,8 @@ def get_list():
         result = wordpress(keyword)
     elif active_name == 'yunpan1':
         result = yunpan1(keyword)
+    elif active_name == 'leijing':
+        result = leijing(keyword)
     elif active_name == 'yunpanziyuan':
         result = yunpanziyuan(keyword)
 

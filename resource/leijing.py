@@ -1,17 +1,16 @@
 # -*- coding: utf-8 -*-
 # @Time    : 2024/1/9
 # @Author  : lhq
-# @File    : wordpress.py
+# @File    : leijing.py
 # @Description :
 from lxml import etree
 
 
-
-def wordpress(keyword):
+def leijing(keyword):
     import requests
 
     headers = {
-        'authority': 'tuier.wordpress.com',
+        'authority': 'www.leijing.xyz',
         'pragma': 'no-cache',
         'cache-control': 'no-cache',
         'sec-ch-ua': '" Not A;Brand";v="99", "Chromium";v="98"',
@@ -24,18 +23,19 @@ def wordpress(keyword):
         'sec-fetch-mode': 'navigate',
         'sec-fetch-user': '?1',
         'sec-fetch-dest': 'document',
-        'referer': 'https://tuier.wordpress.com/?s=%E7%B9%81%E8%8A%B1',
+        'referer': 'https://www.leijing.xyz/search?keyword=%E7%B9%81%E8%8A%B1',
         'accept-language': 'zh-CN,zh;q=0.9',
     }
 
     params = {
-        's': keyword,
+        'keyword': keyword,
     }
 
-    response = requests.get('https://tuier.wordpress.com/', params=params, headers=headers).text
+    response = requests.get('https://www.leijing.xyz/search', params=params, headers=headers).text
     html = etree.HTML(response)
-    titles = html.xpath('/html/body/div[1]/main/div[2]/div/ul/li/div/h2/a/text()')
-    urls = html.xpath('/html/body/div[1]/main/div[2]/div/ul/li/div/h2/a/@href')
 
-    result = [{"title": title, "url": url} for title, url in zip(titles, urls)]
+    titles = html.xpath('/html/body/div[2]/div/div/div/div/div/div[2]/h2/a/text()')
+    urls = html.xpath('/html/body/div[2]/div/div/div/div/div/div[2]/h2/a/@href')
+
+    result = [{"title": title, "url": 'https://www.leijing.xyz/' + url} for title, url in zip(titles, urls)]
     return result
