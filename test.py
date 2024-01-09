@@ -26,7 +26,7 @@ params = {
 }
 
 response = requests.get('https://yunpan1.cc/', params=params, headers=headers).text
-print(response)
+
 html = etree.HTML(response)
 
 titles = html.xpath('//*[@id="flarum-content"]/div/ul/li/a/text()')
