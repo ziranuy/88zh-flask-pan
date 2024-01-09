@@ -8,7 +8,7 @@ from lxml import etree
 from resource import proxies
 
 
-def wordpress():
+def wordpress(keyword):
     import requests
 
     headers = {
@@ -30,16 +30,13 @@ def wordpress():
     }
 
     params = {
-        's': '繁花',
+        's': keyword,
     }
 
-    response = requests.get('https://tuier.wordpress.com/', params=params, headers=headers,proxies=proxies).text
+    response = requests.get('https://tuier.wordpress.com/', params=params, headers=headers).text
     html = etree.HTML(response)
     titles = html.xpath('/html/body/div[1]/main/div[2]/div/ul/li/div/h2/a/text()')
     urls = html.xpath('/html/body/div[1]/main/div[2]/div/ul/li/div/h2/a/@href')
 
     result = [{"title": title, "url": url} for title, url in zip(titles, urls)]
     return result
-
-
-print(wordpress())

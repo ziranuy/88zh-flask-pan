@@ -8,7 +8,6 @@
 import requests
 from lxml import etree
 
-from resource import proxie
 
 
 def pan99(keyword):

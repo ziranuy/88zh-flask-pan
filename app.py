@@ -10,6 +10,7 @@ from flask import Flask, request
 from flask_cors import CORS
 
 from resource.pan99 import pan99
+from resource.wordpress import wordpress
 from resource.yunpan1 import yunpan1
 from resource.yunpanziyuan import yunpanziyuan
 from utils.response import response_decorator
@@ -51,6 +52,8 @@ def get_list():
 
     if active_name == 'pan99':
         result = pan99(keyword)
+    elif active_name == 'wordpress':
+        result = wordpress(keyword)
     elif active_name == 'yunpan1':
         result = yunpan1(keyword)
     elif active_name == 'yunpanziyuan':
