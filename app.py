@@ -24,7 +24,12 @@ r = redis.Redis(connection_pool=pool)
 @app.route('/api/tabs_list', methods=['GET'])
 @response_decorator
 def tabs_list():
-    return ['盘99&pan99', '云盘1&yunpan1', '云盘资源&yunpanziyuan']
+    return [
+        # '盘99&pan99',
+        '阿里云盘&wordpress',
+        '云盘1&yunpan1',
+        '云盘资源&yunpanziyuan'
+    ]
 
 
 @app.route('/api/get_list', methods=['GET'])

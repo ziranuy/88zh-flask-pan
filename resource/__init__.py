@@ -4,7 +4,7 @@
 # @File    : __init__.py.py
 # @Description :
 
-proxie = {
+proxies = {
     'http':'http://127.0.0.1:10809',
     'https':'http://127.0.0.1:10809',
 }
