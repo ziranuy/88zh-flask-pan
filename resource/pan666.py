@@ -5,7 +5,6 @@
 # @Description :
 from lxml import etree
 
-from resource import proxies
 
 
 def pan666(keyword):
@@ -33,8 +32,7 @@ def pan666(keyword):
         'q': keyword,
     }
 
-    response = requests.get('https://pan666.net/', params=params, headers=headers, proxies=proxies).text
-    print(response)
+    response = requests.get('https://pan666.net/', params=params, headers=headers).text
 
     html = etree.HTML(response)
     titles = html.xpath('//*[@id="flarum-content"]/div/ul/li/a/text()')

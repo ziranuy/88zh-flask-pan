@@ -1,19 +1,21 @@
 # -*- coding: utf-8 -*-
-# @Time    : 2024/1/6
+# @Time    : 2024/1/9
 # @Author  : lhq
-# @File    : wpxz.py
-# https://wpxz.top/
+# @File    : alypw.py
 # @Description :
-
 import requests
 from lxml import etree
 
+from resource import proxies
 
 
-def pan99(keyword):
+def alypw():
+    cookies = {
+        'timezone': '8',
+    }
 
     headers = {
-        'authority': 'pan99.xyz',
+        'authority': 'www.alypw.com',
         'pragma': 'no-cache',
         'cache-control': 'no-cache',
         'sec-ch-ua': '" Not A;Brand";v="99", "Chromium";v="98"',
@@ -26,21 +28,23 @@ def pan99(keyword):
         'sec-fetch-mode': 'navigate',
         'sec-fetch-user': '?1',
         'sec-fetch-dest': 'document',
-        'referer': 'https://pan99.xyz/%e7%b9%81%e8%8a%b1-2023/tv/',
+        'referer': 'https://www.alypw.com/category-15.html',
         'accept-language': 'zh-CN,zh;q=0.9',
+        # 'cookie': 'timezone=8',
     }
 
     params = {
-        'cat': '',
-        's': keyword,
+        'q': '繁花',
     }
 
-    response = requests.get('https://pan99.xyz/', params=params, headers=headers).text
+    response = requests.get('https://www.alypw.com/search.php', params=params, headers=headers, proxies=proxies).text
+    print(response)
 
     html = etree.HTML(response)
-    titles = html.xpath('/html/body/main/section/div/div/article/div[3]/h2/a/text()')
-    urls = html.xpath('/html/body/main/section/div/div/article/div[3]/h2/a/@href')
+    titles = html.xpath('//*[@id="main"]/div/div[1]/div/ul/li//div[2]/h2/a//*[not(self::strong)]/text()')
+    urls = html.xpath('//*[@id="main"]/div/div[1]/div/ul/li/div[2]/h2/a/@href')
 
     result = [{"title": title, "url": url} for title, url in zip(titles, urls)]
+    print(result)
 
-    return result
+alypw()
