@@ -10,6 +10,7 @@ from flask import Flask, request
 from flask_cors import CORS
 
 from resource.alypw import alypw
+from resource.gitcafe import gitcafe
 from resource.leijing import leijing
 from resource.pan666 import pan666
 from resource.pan99 import pan99
@@ -58,6 +59,8 @@ def get_list():
 
     if active_name == 'pan99':
         result = pan99(keyword)
+    elif active_name == 'gitcafe':
+        result = gitcafe(keyword)
     elif active_name == 'alypw':
         result = alypw(keyword)
     elif active_name == 'pan666':
